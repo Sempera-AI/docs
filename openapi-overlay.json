@@ -1,0 +1,23 @@
+{
+  "overlay": "1.1.0",
+  "info": {
+    "title": "Sempera reference adjustments",
+    "version": "1.0.0"
+  },
+  "actions": [
+    {
+      "target": "$.components.securitySchemes.apiKey",
+      "description": "A short credential note; the scope list lives in the Authentication guide.",
+      "update": {
+        "description": "A workspace API key, sent as Authorization: Bearer sempera_sk_... Each operation names the one scope it needs. Scopes, key kinds and roles are in the Authentication guide."
+      }
+    },
+    {
+      "target": "$.paths.*[?(@.tags[0] == 'Compatibility')]",
+      "description": "Operations tagged Compatibility are documented by the contract, not listed in the menu.",
+      "update": {
+        "x-hidden": true
+      }
+    }
+  ]
+}

@@ -1,72 +1,190 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
-  "name": "Mintlify Starter Kit",
+  "theme": "luma",
+  "name": "Sempera Docs",
+  "description": "Build, test and run Sempera phone agents from your own code. One hostname, one credential model, one contract.",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#176e3c",
+    "light": "#34d77e",
+    "dark": "#176e3c"
   },
-  "favicon": "/favicon.svg",
-  "navigation": {
-    "pages": [
-      {
-        "group": "Getting Started",
-        "pages": [
-          "index",
-          "quickstart"
-        ]
-      }
-    ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
-        }
-      ]
+  "background": {
+    "color": {
+      "light": "#ffffff",
+      "dark": "#171512"
     }
+  },
+  "icons": {
+    "library": "lucide"
   },
   "logo": {
     "light": "/logo/light.svg",
     "dark": "/logo/dark.svg"
   },
+  "favicon": "/favicon.svg",
   "navbar": {
     "links": [
       {
-        "label": "Support",
-        "href": "mailto:support@mintlify.com"
+        "label": "Contact",
+        "href": "mailto:hello@sempera.org"
       }
     ],
     "primary": {
       "type": "button",
-      "label": "Dashboard",
-      "href": "https://app.mintlify.com"
+      "label": "Log in to the App",
+      "href": "https://app.sempera.org"
+    }
+  },
+  "navigation": {
+    "global": {
+      "anchors": [
+        {
+          "anchor": "Sempera App",
+          "icon": "layout-dashboard",
+          "href": "https://app.sempera.org"
+        },
+        {
+          "anchor": "OpenAPI contract",
+          "icon": "braces",
+          "href": "https://api.sempera.org/openapi.json"
+        },
+        {
+          "anchor": "sempera.org",
+          "icon": "globe",
+          "href": "https://sempera.org"
+        }
+      ]
+    },
+    "tabs": [
+      {
+        "tab": "Guides",
+        "icon": "book-open",
+        "groups": [
+          {
+            "group": "Get started",
+            "pages": [
+              "index",
+              "getting-started",
+              "mcp"
+            ]
+          },
+          {
+            "group": "Build an agent",
+            "pages": [
+              "agents",
+              "branches",
+              "personas",
+              "scenarios",
+              "memory-schema",
+              "tools-and-integrations",
+              "snippets",
+              "knowledge",
+              "secrets-and-signing"
+            ]
+          },
+          {
+            "group": "Conversations",
+            "pages": [
+              "sessions-and-calls",
+              "api-chat",
+              "sms",
+              "phone-plan",
+              "live-call-streams",
+              "recordings",
+              "widgets"
+            ]
+          },
+          {
+            "group": "Test and improve",
+            "pages": [
+              "tests-and-evals",
+              "dispositions",
+              "citation-schemas",
+              "triage",
+              "alerts",
+              "automations"
+            ]
+          },
+          {
+            "group": "Workspace and account",
+            "pages": [
+              "workspaces",
+              "app-features",
+              "billing-boundaries",
+              "security-and-privacy"
+            ]
+          },
+          {
+            "group": "Clients and SDKs",
+            "pages": [
+              "supported-clients",
+              "sdks",
+              "web-sdk"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API reference",
+        "icon": "square-terminal",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "api-overview",
+              "authentication",
+              "errors-and-limits",
+              "webhooks"
+            ]
+          }
+        ],
+        "openapi": {
+          "source": "https://api.sempera.org/openapi.json",
+          "overlays": [
+            "openapi-overlay.json"
+          ]
+        }
+      },
+      {
+        "tab": "Changelog",
+        "icon": "history",
+        "groups": [
+          {
+            "group": "Changelog",
+            "pages": [
+              "changelog"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "api": {
+    "playground": {
+      "display": "interactive"
+    },
+    "examples": {
+      "languages": [
+        "curl",
+        "python",
+        "javascript"
+      ],
+      "defaults": "required"
     }
   },
   "contextual": {
     "options": [
       "copy",
-      "view",
-      "chatgpt",
-      "claude",
-      "perplexity",
-      "mcp",
-      "cursor",
-      "vscode"
+      "view"
     ]
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "linkedin": "https://www.linkedin.com/company/sempera-ai",
+      "x": "https://x.com/SemperaAI"
     }
+  },
+  "seo": {
+    "indexing": "navigable"
   }
 }
