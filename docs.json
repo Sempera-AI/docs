@@ -83,7 +83,12 @@
             "group": "Phone numbers",
             "pages": [
               "phone-plan",
-              "sms"
+              "sms",
+              "connect-chatgpt",
+              "connect-claude",
+              "connect-codex",
+              "connect-grok",
+              "connect-muse"
             ]
           },
           {
