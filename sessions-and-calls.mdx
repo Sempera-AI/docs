@@ -81,10 +81,49 @@ A workspace keeps a shortlist of cleared Sempera voices. Every workspace member 
 
 ## Minting a Web voice session
 
-```http
+<CodeGroup>
+
+```http HTTP
 POST /v1/sessions
 {"agent_id": "northwind-barbers", "channel": "web_voice", "end_user_id": "visitor-42", "language": "en"}
 ```
+
+```bash cURL
+curl -X POST https://api.sempera.org/v1/sessions \
+  -H "Authorization: Bearer sempera_sk_..." \
+  -H "Content-Type: application/json" \
+  -d '{"agent_id": "northwind-barbers", "channel": "web_voice", "end_user_id": "visitor-42", "language": "en"}'
+```
+
+```js Node
+// On your server: the API key never reaches the browser.
+const session = await fetch("https://api.sempera.org/v1/sessions", {
+  method: "POST",
+  headers: {
+    Authorization: `Bearer ${process.env.SEMPERA_API_KEY}`,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({ agent_id: "northwind-barbers", channel: "web_voice", end_user_id: "visitor-42", language: "en" }),
+}).then((r) => r.json());
+// Hand session.url and session.token to the browser.
+```
+
+```python Python
+import json, os, urllib.request
+
+req = urllib.request.Request(
+    "https://api.sempera.org/v1/sessions",
+    data=json.dumps({"agent_id": "northwind-barbers", "channel": "web_voice",
+                     "end_user_id": "visitor-42", "language": "en"}).encode(),
+    method="POST",
+    headers={"Authorization": f"Bearer {os.environ['SEMPERA_API_KEY']}",
+             "Content-Type": "application/json"},
+)
+with urllib.request.urlopen(req) as res:
+    session = json.load(res)  # hand session["url"] and session["token"] to the browser
+```
+
+</CodeGroup>
 
 The response is `{"id", "transport", "url", "token", "expires_at", "voice", "speech_recognition"}`, where `transport` names the realtime media protocol the `url` and `token` are for ([Web SDK](/web-sdk)). Hand `url` and `token` to the browser; the token is bound to that one room and expires in 30 minutes. Your API key never leaves your server. The request is refused with `409` when the agent has no published version, when the requested voice is not in the catalogue, or when the platform is at capacity (`503`). When the agent hears or speaks through a published Sempera model, `speech_recognition` or `voice` names it by its Sempera model id (`model_id`, repeated as `provider` and `model`), and the session runs that model; if the model cannot carry a call on this deployment, the request is refused with `409` and a sentence saying so, and no other model is used in its place. Otherwise the two legs name no engine and no model: `voice` carries the voice's Sempera id (`voice_id`) and name, and `speech_recognition` its language. A voice that cannot be used is refused in Sempera's words, and a `voice_id` that looks like a Sempera voice id but is not one is refused with `400` and `reason: invalid_voice_id`.
 
@@ -109,7 +148,9 @@ A phone call is a Session with `channel: phone` and also a Call: `GET /v1/calls?
 
 `POST /v1/calls` (`calls:write`, owner role, requires `Idempotency-Key`) places one outbound call through the App's guarded dispatcher. A missing gateway or unreadable outbound policy refuses the request; it never reports a ledger-only call as queued.
 
-```http
+<CodeGroup>
+
+```http HTTP
 POST /v1/calls
 Idempotency-Key: appointment-reminder-unique-intent
 {"agent_id": "northwind-barbers", "to": "+14165550123", "production": true,
@@ -117,6 +158,61 @@ Idempotency-Key: appointment-reminder-unique-intent
  "consent_basis": "This person asked Northwind Barbers to call them with appointment reminders.",
  "metadata": {"name": "Ada"}}
 ```
+
+```bash cURL
+curl -X POST https://api.sempera.org/v1/calls \
+  -H "Authorization: Bearer sempera_sk_..." \
+  -H "Content-Type: application/json" \
+  -H "Idempotency-Key: appointment-reminder-unique-intent" \
+  -d '{"agent_id": "northwind-barbers", "to": "+14165550123", "production": true, "message": "Your appointment reminder is ready.", "consent_basis": "This person asked Northwind Barbers to call them with appointment reminders.", "metadata": {"name": "Ada"}}'
+```
+
+```js Node
+const res = await fetch("https://api.sempera.org/v1/calls", {
+  method: "POST",
+  headers: {
+    Authorization: `Bearer ${process.env.SEMPERA_API_KEY}`,
+    "Content-Type": "application/json",
+    "Idempotency-Key": "appointment-reminder-unique-intent",
+  },
+  body: JSON.stringify({
+    agent_id: "northwind-barbers",
+    to: "+14165550123",
+    production: true,
+    message: "Your appointment reminder is ready.",
+    consent_basis: "This person asked Northwind Barbers to call them with appointment reminders.",
+    metadata: { name: "Ada" },
+  }),
+});
+const call = await res.json();
+```
+
+```python Python
+import json, os, urllib.request
+
+body = {
+    "agent_id": "northwind-barbers",
+    "to": "+14165550123",
+    "production": True,
+    "message": "Your appointment reminder is ready.",
+    "consent_basis": "This person asked Northwind Barbers to call them with appointment reminders.",
+    "metadata": {"name": "Ada"},
+}
+req = urllib.request.Request(
+    "https://api.sempera.org/v1/calls",
+    data=json.dumps(body).encode(),
+    method="POST",
+    headers={
+        "Authorization": f"Bearer {os.environ['SEMPERA_API_KEY']}",
+        "Content-Type": "application/json",
+        "Idempotency-Key": "appointment-reminder-unique-intent",
+    },
+)
+with urllib.request.urlopen(req) as res:
+    call = json.load(res)
+```
+
+</CodeGroup>
 
 | Field | Rule |
 | --- | --- |

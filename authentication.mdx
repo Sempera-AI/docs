@@ -50,7 +50,11 @@ Each outside client gets its own grant, so one can be ended without touching ano
 
 ## Browser clients
 
-A browser never holds an API key. Your server calls `POST /v1/sessions` and hands the browser the returned `token` and `url`; the token is scoped to one room and expires with the conversation.
+For customer-facing voice, keep the workspace API key on your server. Your server calls `POST /v1/sessions` and hands the browser the returned `token` and `url`; the token is scoped to one room and expires with the conversation. Never embed a workspace key in a public bundle.
+
+Developer tools can call the public `/v1` API using an explicitly supplied `Authorization` bearer key and `credentials: "omit"`. `https://docs.sempera.org` may preflight the route's supported methods, including writes. Other origins may preflight read-only methods when `Access-Control-Request-Headers` includes `Authorization`; the actual read must carry the bearer key. A preflight announces the header name, not the key, and grants no access by itself: the actual request still needs valid authentication, scopes and workspace permissions.
+
+CORS does not enable credentials mode. Requests carrying cookies, session-only routes, OAuth protocol doors, provider/server-to-server ingress, legacy `/api` routes and routes outside `/v1` receive no permissive CORS headers. Allowed request headers are `Authorization`, `Content-Type`, `Idempotency-Key`, `X-Request-Id` and `traceparent`. Browser callers can read request and correlation ids, rate-limit and retry headers, `Idempotent-Replayed`, `Location`, `WWW-Authenticate` and `Content-Disposition` on permitted responses, including errors.
 
 ## Sign-in for people
 

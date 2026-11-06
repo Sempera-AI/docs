@@ -340,7 +340,9 @@ The signature is the lowercase hex HMAC-SHA256, keyed with your endpoint secret,
 5. Compare with `v1` in constant time.
 6. Drop an `X-Sempera-Event-Id` you have already processed.
 
-```python
+<CodeGroup>
+
+```python Python
 import hmac, hashlib, time
 
 def verify(secret: str, body: bytes, header: str, tolerance: int = 300) -> bool:
@@ -351,6 +353,22 @@ def verify(secret: str, body: bytes, header: str, tolerance: int = 300) -> bool:
     expected = hmac.new(secret.encode(), f"{t}.".encode() + body, hashlib.sha256).hexdigest()
     return hmac.compare_digest(expected, parts["v1"])
 ```
+
+```js Node
+import { createHmac, timingSafeEqual } from "node:crypto";
+
+// body is the raw request body as a Buffer, exactly as received
+export function verify(secret, body, header, tolerance = 300) {
+  const parts = Object.fromEntries(header.split(",").map((p) => p.split("=", 2)));
+  const t = Number(parts.t);
+  if (!Number.isFinite(t) || Math.abs(Date.now() / 1000 - t) > tolerance) return false;
+  const expected = createHmac("sha256", secret).update(`${t}.`).update(body).digest("hex");
+  const given = Buffer.from(parts.v1 ?? "", "utf8");
+  return given.length === expected.length && timingSafeEqual(Buffer.from(expected, "utf8"), given);
+}
+```
+
+</CodeGroup>
 
 A known answer, so you can check your own implementation in any language:
 

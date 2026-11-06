@@ -25,13 +25,13 @@
   "navbar": {
     "links": [
       {
-        "label": "Contact",
+        "label": "Support",
         "href": "mailto:hello@sempera.org"
       }
     ],
     "primary": {
       "type": "button",
-      "label": "Log in to the App",
+      "label": "Open the App",
       "href": "https://app.sempera.org"
     }
   },
@@ -57,7 +57,7 @@
     },
     "tabs": [
       {
-        "tab": "Guides",
+        "tab": "Documentation",
         "icon": "book-open",
         "groups": [
           {
@@ -76,49 +76,61 @@
               "personas",
               "scenarios",
               "memory-schema",
-              "tools-and-integrations",
-              "snippets",
-              "knowledge",
-              "secrets-and-signing"
+              "knowledge"
             ]
           },
           {
-            "group": "Conversations",
+            "group": "Phone numbers",
+            "pages": [
+              "phone-plan",
+              "sms"
+            ]
+          },
+          {
+            "group": "Calls",
             "pages": [
               "sessions-and-calls",
-              "api-chat",
-              "sms",
-              "phone-plan",
               "live-call-streams",
               "recordings",
+              "api-chat",
               "widgets"
             ]
           },
           {
-            "group": "Test and improve",
+            "group": "Tools and integrations",
+            "pages": [
+              "tools-and-integrations",
+              "snippets",
+              "secrets-and-signing",
+              "automations",
+              "webhooks"
+            ]
+          },
+          {
+            "group": "Testing",
             "pages": [
               "tests-and-evals",
               "dispositions",
               "citation-schemas",
               "triage",
-              "alerts",
-              "automations"
+              "alerts"
             ]
           },
           {
-            "group": "Workspace and account",
+            "group": "Workspace and security",
             "pages": [
               "workspaces",
-              "app-features",
+              "security-and-privacy",
               "billing-boundaries",
-              "security-and-privacy"
+              "app-features"
             ]
           },
           {
-            "group": "Clients and SDKs",
+            "group": "SDKs and tools",
             "pages": [
-              "supported-clients",
+              "developer-tools",
               "sdks",
+              "supported-clients",
               "web-sdk"
             ]
           }
@@ -129,12 +141,11 @@
         "icon": "square-terminal",
         "groups": [
           {
-            "group": "Overview",
+            "group": "Get started",
             "pages": [
               "api-overview",
               "authentication",
-              "errors-and-limits",
-              "webhooks"
+              "errors-and-limits"
             ]
           }
         ],
@@ -175,14 +186,53 @@
   "contextual": {
     "options": [
       "copy",
-      "view"
+      "view",
+      "mcp",
+      "cursor",
+      "vscode"
     ]
   },
   "footer": {
     "socials": {
       "linkedin": "https://www.linkedin.com/company/sempera-ai",
       "x": "https://x.com/SemperaAI"
-    }
+    },
+    "links": [
+      {
+        "header": "Docs for agents",
+        "items": [
+          {
+            "label": "llms.txt",
+            "href": "https://docs.sempera.org/llms.txt"
+          },
+          {
+            "label": "llms-full.txt",
+            "href": "https://docs.sempera.org/llms-full.txt"
+          },
+          {
+            "label": "OpenAPI contract",
+            "href": "https://api.sempera.org/openapi.json"
+          }
+        ]
+      },
+      {
+        "header": "Sempera",
+        "items": [
+          {
+            "label": "Sempera App",
+            "href": "https://app.sempera.org"
+          },
+          {
+            "label": "sempera.org",
+            "href": "https://sempera.org"
+          },
+          {
+            "label": "Support",
+            "href": "mailto:hello@sempera.org"
+          }
+        ]
+      }
+    ]
   },
   "seo": {
     "indexing": "navigable"
