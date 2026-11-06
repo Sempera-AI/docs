@@ -65,7 +65,7 @@
             "pages": [
               "index",
               "getting-started",
-              "mcp"
+              "connect-mcp"
             ]
           },
           {
@@ -186,5 +186,11 @@
   },
   "seo": {
     "indexing": "navigable"
-  }
+  },
+  "redirects": [
+    {
+      "source": "/mcp",
+      "destination": "/connect-mcp"
+    }
+  ]
 }

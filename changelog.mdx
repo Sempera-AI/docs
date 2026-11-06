@@ -9,6 +9,12 @@ description: "The one-API cutover, retired hostnames, deprecation policy."
 
 Breaking changes ship as a new major path (`/v2`) with a migration guide, a deprecation notice on the old path and a sunset date announced here at least 90 days ahead. Additive changes (new fields, new routes, new event types) ship on `/v1` without notice and are safe to ignore.
 
+<Update label="Unreleased" description="API front door">
+
+- `GET https://api.sempera.org/` and `GET https://api.sempera.org/v1` answer the same small JSON index instead of an error or a redirect to the company site: `name`, `version`, `status`, `documentation` (the address of this documentation site), `openapi`, `llms_txt`, `docs` and `health`. `status` and `documentation` are new fields; nothing was removed ([API overview](/api-overview)).
+
+</Update>
+
 <Update label="Unreleased" description="AI disclosure setting">
 
 - Each agent has an AI disclosure setting (`ai_disclosure` in the draft, `compliance.yaml.ai_disclosure.enabled`), off by default for new and existing agents. On: the agent says it is a virtual assistant right after the owner's greeting, as before. Off: the owner's greeting is said word for word, with no AI sentence added. Changing it is a HIGH-risk change, decided by a named person on Publish and kept in the agent's change and version history. The recording notice is unchanged: it follows the greeting whenever calls are recorded and is never said when they are not. The truthful answer to "are you a person?" does not depend on the setting.
@@ -17,7 +23,7 @@ Breaking changes ship as a new major path (`/v2`) with a migration guide, a depr
 
 <Update label="Unreleased" description="saved links and client guidance">
 
-- Legacy App links retain their query parameters and fragment at the final workspace redirect, including repeated filters. Parameters and anchors explicitly set by a migration take precedence. Sign-in still uses the same-origin return address; a visitor without a workspace still goes to onboarding, without automatic saved-link resumption afterward.
+- Legacy App links retain their query parameters and fragment at the final workspace redirect, including repeated filters. Parameters and anchors explicitly set by a migration take precedence. Sign-in still uses the same-origin return address. A visitor without a workspace still goes to onboarding, which now carries the saved link and resumes it when onboarding is finished or skipped (or offers it beside a new agent built from a website). Only a same-origin path outside sign-in, sign-up and onboarding is resumed.
 - [Supported clients](/supported-clients) now distinguishes the source-available TypeScript and Python SDKs from package publication. The MCP guide makes the complete bearer header value explicit. No API route, credential boundary or database schema changed.
 - `POST /v1/calls` accepts `mode: "prompt"`: the conversation is only `task` (or `settings.prompt`), with `first_sentence`, `voice` and `language` for this call. `agent_id` remains the line for number, consent, do-not-contact, calling hours, caps and billing. A prompt is required. `agent_version`, `production` and `environment` are refused. `prompt_only` is not a field and skips no check. [Sessions and calls](/sessions-and-calls) and [TypeScript and Python SDKs](/sdks).
 
@@ -65,7 +71,7 @@ Breaking changes ship as a new major path (`/v2`) with a migration guide, a depr
 
 ### Added
 
-- TypeScript (`@sempera/sdk`) and Python (`sempera-sdk`) client libraries, generated from `openapi.json` with one method per operation, typed errors, retries that honor `Retry-After`, automatic idempotency keys, cursor paging and webhook signature verification ([TypeScript and Python SDKs](/sdks)). They are not published to npm or PyPI yet. No route changed.
+- TypeScript (`@sempera/sdk`) and Python (`sempera`) client libraries, generated from `openapi.json` with one method per operation, typed errors, retries that honor `Retry-After`, automatic idempotency keys, cursor paging and webhook signature verification ([TypeScript and Python SDKs](/sdks)). They are not published to npm or PyPI yet. No route changed.
 
 </Update>
 

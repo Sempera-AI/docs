@@ -42,7 +42,7 @@ A workspace owner creates keys in the Sempera App under Settings, API keys, or w
 
 Each outside client gets its own grant, so one can be ended without touching another. An owner sees them all in Settings, Connected clients, with scopes and last use.
 
-**OAuth, for MCP hosts.** The host discovers the door from the `401` on `POST /v1/mcp`, registers itself, and sends the browser to a consent page on `app.sempera.org`. Only a signed-in workspace owner can approve, and no key or token can do it for them. The grant covers one client in one workspace with the scopes approved there, and approving the same client again replaces it. The flow is authorization code with PKCE (`S256`), exact redirects and audience binding to `https://api.sempera.org/v1/mcp`. Details are in [MCP](/mcp#sign-in-with-oauth).
+**OAuth, for MCP hosts.** The host discovers the door from the `401` on `POST /v1/mcp`, registers itself, and sends the browser to a consent page on `app.sempera.org`. Only a signed-in workspace owner can approve, and no key or token can do it for them. The grant covers one client in one workspace with the scopes approved there, and approving the same client again replaces it. The flow is authorization code with PKCE (`S256`), exact redirects and audience binding to `https://api.sempera.org/v1/mcp`. Details are in [MCP](/connect-mcp#sign-in-with-oauth).
 
 **A scoped REST credential, for a client that cannot do OAuth.** An owner creates one in Settings, Connected clients, or with `POST /v1/client-grants/rest` (`client`, `scopes`, optional `expires_in_days`). It holds phone scopes only, works on the phone routes only, expires in 90 days by default (at most 365), and is shown once.
 

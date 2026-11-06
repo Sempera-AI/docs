@@ -27,7 +27,7 @@ These routes answer anyone, at the anonymous limit of 60 requests a minute per a
 
 | Route | What it answers |
 | --- | --- |
-| `GET /v1` | The API's front door: its version and links to the contract and the guide pages. |
+| `GET /` and `GET /v1` | The API's front door, the same small JSON index at both: its name, version, `status` (`ok`), `documentation` (the docs site) and links to the contract and the guide pages. |
 | `GET /v1/health` | Liveness: `ok`, the API version, the build and the environment. |
 | `GET /openapi.json` | The OpenAPI 3.1 contract, generated from the running route table. |
 | `GET /llms.txt` | The map of these pages for coding agents. |
