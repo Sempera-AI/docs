@@ -1,0 +1,106 @@
+name: Docs public facts
+
+on:
+  pull_request_target:
+    branches: [main]
+    types: [opened, reopened, synchronize, ready_for_review]
+  pull_request:
+    branches: [main]
+    paths: ['.github/workflows/public-facts.yml']
+  push:
+    branches: [source-docs]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Verify docs public facts
+    permissions:
+      contents: read
+      statuses: write
+    env:
+      GH_REPO: ${{ github.repository }}
+      CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Mark trusted check pending
+        if: github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api "repos/$GH_REPO/statuses/$CANDIDATE_SHA" -f context=docs-public-facts -f state=pending \
+            -f target_url="$GITHUB_SERVER_URL/$GH_REPO/actions/runs/$GITHUB_RUN_ID" >/dev/null
+      - name: Verify the source build and live API
+        run: |
+          candidate="$GITHUB_SHA"
+          if [ -n "$PR_NUMBER" ]; then
+            git fetch --no-tags --depth=1 origin "refs/pull/$PR_NUMBER/head"
+            test "$(git rev-parse FETCH_HEAD)" = "$CANDIDATE_SHA"
+            git fetch --no-tags --depth=1 origin "refs/pull/$PR_NUMBER/merge"
+            candidate=$(git rev-parse FETCH_HEAD)
+            test "$(git cat-file -p "$candidate" | sed -n '3s/^parent //p')" = "$CANDIDATE_SHA"
+          fi
+          git fetch --no-tags --depth=1 origin refs/heads/source-docs
+          git diff --exit-code --name-only "$candidate" FETCH_HEAD -- . ':(exclude).github'
+          git show "$candidate:source-commit.json" > "$RUNNER_TEMP/docs-source-receipt.json"
+          python3 - <<'PY'
+          import hashlib
+          import json
+          import os
+          import re
+          from pathlib import Path
+          from urllib.request import urlopen
+
+          receipt = json.loads((Path(os.environ["RUNNER_TEMP"]) / "docs-source-receipt.json").read_text())
+          if not re.fullmatch(r"[0-9a-f]{40}", receipt["source_sha"]):
+              raise SystemExit("Missing exact source commit")
+          with urlopen("https://api.sempera.org/openapi.json", timeout=20) as response:
+              spec = json.load(response)
+          digest = hashlib.sha256(json.dumps(spec, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+          if digest != receipt["openapi_sha256"]:
+              raise SystemExit("The live OpenAPI contract changed since the source facts were checked")
+          print(f"Docs and live API match source {receipt['source_sha']}")
+          PY
+      - name: Record trusted check on the PR head
+        if: always() && github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERDICT: ${{ job.status == 'success' && 'success' || 'failure' }}
+        run: |
+          gh api "repos/$GH_REPO/statuses/$CANDIDATE_SHA" -f context=docs-public-facts -f state="$VERDICT" \
+            -f target_url="$GITHUB_SERVER_URL/$GH_REPO/actions/runs/$GITHUB_RUN_ID" >/dev/null
+
+  merge:
+    name: Merge the checked source build
+    if: github.event_name == 'push' && github.repository == 'Sempera-AI/docs'
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    concurrency:
+      group: docs-source-merge
+    permissions:
+      contents: write
+      pull-requests: write
+    env:
+      GH_REPO: ${{ github.repository }}
+      GH_TOKEN: ${{ secrets.SEMPERA_DOCS_PR_TOKEN || github.token }}
+    steps:
+      - name: Merge the exact checked source build
+        run: |
+          latest=$(gh api "repos/$GH_REPO/git/ref/heads/source-docs" --jq .object.sha)
+          if [ "$latest" != "$GITHUB_SHA" ]; then
+            echo 'A newer source build superseded this run'
+            exit 0
+          fi
+          pr=$(gh pr list --base main --head source-docs --state open --json url --jq '.[0].url')
+          if [ -z "$pr" ]; then
+            pr=$(gh pr create --base main --head source-docs --title 'Publish checked Sempera docs' \
+              --body 'Generated from Sempera main and checked against the live API. The exact source SHA is in source-commit.json.')
+          fi
+          gh pr merge "$pr" --squash --match-head-commit "$GITHUB_SHA"

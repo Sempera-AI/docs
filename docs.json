@@ -74,6 +74,8 @@
               "agents",
               "branches",
               "personas",
+              "hearing-settings",
+              "custom-models",
               "scenarios",
               "memory-schema",
               "knowledge"
