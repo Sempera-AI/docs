@@ -74,6 +74,8 @@
               "agents",
               "branches",
               "personas",
+              "hearing-settings",
+              "custom-models",
               "scenarios",
               "memory-schema",
               "knowledge"
@@ -217,6 +219,14 @@
           {
             "label": "OpenAPI contract",
             "href": "https://api.sempera.org/openapi.json"
+          },
+          {
+            "label": "AI context",
+            "href": "https://sempera.org/ai-context/"
+          },
+          {
+            "label": "sempera.org llms.txt",
+            "href": "https://sempera.org/llms.txt"
           }
         ]
       },
