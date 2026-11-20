@@ -511,12 +511,12 @@ A connector that signs in with OAuth, such as a ChatGPT connector, uses the sign
 
 The [connection guides](/supported-clients#ai-assistants) cover exactly four assistant entries. ChatGPT and Codex share an entry, with separate instructions. These are connection guides, not claims of live assistant interoperability: no real assistant account has completed the full approved-call journey.
 
-| Assistant | Connection guide | Status |
-| --- | --- | --- |
-| Claude | [Claude app and Claude Code](/connect-claude) | Unverified from a real account |
-| ChatGPT/Codex | [ChatGPT OAuth](/connect-chatgpt), [Codex MCP config](/connect-codex) | Unverified from real accounts |
-| Grok Bot | [Conditional MCP setup](/connect-grok) | Client UI and authentication unverified |
-| Muse | [Conditional REST connector](/connect-muse) | Client connector UI unverified |
+| Assistant | Connection guide |
+| --- | --- |
+| Claude | [Claude app and Claude Code](/connect-claude) |
+| ChatGPT/Codex | [ChatGPT OAuth](/connect-chatgpt), [Codex MCP config](/connect-codex) |
+| Grok Bot | [Conditional MCP setup](/connect-grok) |
+| Muse | [Conditional REST connector](/connect-muse) |
 
 `mcp_client_setup` and `GET /v1/mcp/clients/{client}` serve coding-client config snippets. A served snippet is guidance, not evidence that its client has connected. Muse's REST connector uses the same phone operations without MCP.
 
