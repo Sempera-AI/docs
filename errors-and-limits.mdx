@@ -60,6 +60,8 @@ The standard REST refusal has this shape (protocol and compatibility exceptions 
 | `service_unavailable` | 503 | A required service or stored record cannot be read right now; check the operation's state before retrying a write |
 | `internal_error` | 500 | Quote the `request_id` to support |
 
+The plan limit codes (`CALL_RL_PLAN_*` and `SMS_RL_PLAN_*`) carry no figures here; the current figures are on the [pricing page](https://sempera.org/pricing/).
+
 Quote `X-Request-Id` to support. Branch on the stable code, not the human-readable message.
 
 ### OAuth protocol errors
