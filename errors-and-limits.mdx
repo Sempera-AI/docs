@@ -32,7 +32,7 @@ The standard REST refusal has this shape (protocol and compatibility exceptions 
 | `gone` | 410 | It existed and is no longer served (a deleted recording, or one whose access ended); `reason` says which |
 | `payload_too_large` | 413 | The request body exceeds the route's size limit |
 | `rate_limited` | 429 | A request or feature budget is exhausted; use `Retry-After` or the error's `retry_after_s` when present |
-| `CALL_RL_PLAN_CONCURRENCY` | 429 | A personal phone plan allows one call at a time ([phone plan](/phone-plan)) |
+| `CALL_RL_PLAN_CONCURRENCY` | 429 | The plan's limit on calls at once is reached ([phone plan](/phone-plan)) |
 | `CALL_RL_PLAN_HOURLY` | 429 | The plan's calls per hour are used |
 | `CALL_RL_PLAN_DAILY` | 429 | The plan's calls for today are used |
 | `CALL_RL_PLAN_DAILY_MINUTES` | 429 | The plan's call minutes for today are used |

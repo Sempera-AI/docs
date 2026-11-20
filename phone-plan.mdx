@@ -37,20 +37,25 @@ MCP lists only the tools allowed by the connection's scopes. Muse can use the ma
 
 ## Limits
 
-The default is unlimited US and Canada voice and text, inside fair-use caps. An owner-editable config can switch the plan to a limited allowance of 100 connected minutes and 100 text segments a month.
+A plan has limits on calls at once, calls and texts per hour and per day, call minutes per day, call length and, in limited mode, a monthly allowance. The current figures are on the [pricing page](https://sempera.org/pricing/). `GET /v1/phone-profile` answers what is left. A request over a limit is refused with the code below and starts nothing.
 
-| Limit | Default | Refusal |
+| Limit | Refusal |
+| --- | --- |
+| Calls at once, inbound and outbound, whole account | `CALL_RL_PLAN_CONCURRENCY` |
+| Calls per hour, outbound | `CALL_RL_PLAN_HOURLY` |
+| Calls per day, outbound | `CALL_RL_PLAN_DAILY` |
+| Call minutes per day, inbound and outbound | `CALL_RL_PLAN_DAILY_MINUTES` |
+| Longest outbound call | none, the call ends at the limit |
+| Texts per hour, agent replies and API sends | `SMS_RL_PLAN_HOURLY` |
+| Texts per day, agent replies and API sends | `SMS_RL_PLAN_DAILY` |
+| Monthly allowance, limited mode only | `CALL_RL_PLAN_ALLOWANCE`, `SMS_RL_PLAN_ALLOWANCE` |
+
+These rules are the same for every plan:
+
+| Rule | Value | Refusal |
 | --- | --- | --- |
-| Calls at once, inbound and outbound, whole account | 1 | `CALL_RL_PLAN_CONCURRENCY` |
-| Calls per hour, outbound | 20 | `CALL_RL_PLAN_HOURLY` |
-| Calls per day, outbound | 50 | `CALL_RL_PLAN_DAILY` |
-| Call minutes per day, inbound and outbound | 1,000 | `CALL_RL_PLAN_DAILY_MINUTES` |
-| Longest outbound call | 60 minutes, clamped to the plan maximum | none |
 | Call task text | 1 to 1,500 characters | `validation_failed` |
 | Calling and texting window | 9 AM inclusive to 9 PM exclusive in the recipient's local time, based on the number's area code | `PHONE_OUTSIDE_HOURS` |
-| Texts per hour, agent replies and API sends | 20 | `SMS_RL_PLAN_HOURLY` |
-| Texts per day, agent replies and API sends | 100 | `SMS_RL_PLAN_DAILY` |
-| Monthly allowance, limited mode only | 100 minutes, 100 segments | `CALL_RL_PLAN_ALLOWANCE`, `SMS_RL_PLAN_ALLOWANCE` |
 | Destinations | US and Canada | `PHONE_DESTINATION_BLOCKED` |
 
 `+1` alone is not enough. A number must be a real North American number on a priced list: US and Canadian geographic area codes and toll-free calls. Premium and special exchanges (N11, 555, 900, 976), non-geographic and Caribbean codes, high-cost northern Canada, and anything unknown are refused. Toll-free numbers can be called, not texted. Hourly caps reset on the hour and daily caps at midnight UTC, and a 429 carries `retry_after_s`. A call counts at its worst case from the moment it is reserved until real minutes replace that, in whole started minutes. A call is clamped to what is left rather than refused, unless under a minute is left.
@@ -78,7 +83,7 @@ Inbound while a call is live, or with nothing left, hears a busy message. An inb
 
 A test payment cannot fund a real call or text, including agent replies and HELP. Calling and texting hours depend on where the recipient is, using the number's area code: 9 AM to 9 PM their local time. For an area code that spans time zones, the window must be open in every zone it spans. Unknown, non-geographic (including toll-free) and non-`+1` numbers use every configured fallback time zone (`hours_zones`, Vancouver and Toronto by default). This hours fallback does not bypass destination restrictions.
 
-A plan is for one person. It is refused on a workspace with a business subscription or live customer lines, and a business checkout is refused while a plan is usable. Its gates key on a usable plan and its own number, so a cancelled plan changes nothing else on the workspace. A workspace cannot be closed while a plan is still billing. An owner pilot has its own expiry and worst-case budget, capped at 120 minutes and 40 text segments; its approved limits may be lower.
+A plan is for one person. It is refused on a workspace with a business subscription or live customer lines, and a business checkout is refused while a plan is usable. Its gates key on a usable plan and its own number, so a cancelled plan changes nothing else on the workspace. A workspace cannot be closed while a plan is still billing. An owner pilot has its own expiry and worst-case budget.
 
 ## A call
 
