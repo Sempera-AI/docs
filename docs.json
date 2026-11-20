@@ -199,56 +199,6 @@
       "vscode"
     ]
   },
-  "footer": {
-    "socials": {
-      "linkedin": "https://www.linkedin.com/company/sempera-ai",
-      "x": "https://x.com/SemperaAI"
-    },
-    "links": [
-      {
-        "header": "Docs for agents",
-        "items": [
-          {
-            "label": "llms.txt",
-            "href": "https://docs.sempera.org/llms.txt"
-          },
-          {
-            "label": "llms-full.txt",
-            "href": "https://docs.sempera.org/llms-full.txt"
-          },
-          {
-            "label": "OpenAPI contract",
-            "href": "https://api.sempera.org/openapi.json"
-          },
-          {
-            "label": "AI context",
-            "href": "https://sempera.org/ai-context/"
-          },
-          {
-            "label": "sempera.org llms.txt",
-            "href": "https://sempera.org/llms.txt"
-          }
-        ]
-      },
-      {
-        "header": "Sempera",
-        "items": [
-          {
-            "label": "Sempera App",
-            "href": "https://app.sempera.org"
-          },
-          {
-            "label": "sempera.org",
-            "href": "https://sempera.org"
-          },
-          {
-            "label": "Support",
-            "href": "mailto:hello@sempera.org"
-          }
-        ]
-      }
-    ]
-  },
   "seo": {
     "indexing": "navigable"
   },
