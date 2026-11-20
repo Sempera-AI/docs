@@ -12,7 +12,7 @@ This guide is setup guidance, not proof that your account can connect; which ass
 
 ## Add the server and sign in
 
-Add the server to `~/.codex/config.toml`. This URL/config shape is included in Sempera's setup guidance. Codex's current OAuth commands and flags have not been verified here.
+Add the server to `~/.codex/config.toml`.
 
 ```toml
 [mcp_servers.sempera]
@@ -24,7 +24,7 @@ If your Codex build offers OAuth, use its MCP sign-in instructions with dynamic 
 ## Or use a credential
 
 1. In Settings \> Connected clients, under **Connected AI clients**, select **Codex** and **Read** access. Turn on **Phone tools (owner approval required)** and choose **Connect client**. Store the key shown once in your local `SEMPERA_PHONE_KEY` environment variable, using your usual secret manager rather than committing it.
-2. Use the TOML below. This bearer configuration is present in Sempera's setup guidance; loading it in a real Codex build remains unverified. The key works on MCP only and adds all three phone scopes to the read scopes. An ordinary workspace API key is refused on the phone tools.
+2. Use the TOML below. The key works on MCP only and adds all three phone scopes to the read scopes. An ordinary workspace API key is refused on the phone tools.
 3. If replacing an older connection, update the key in Codex and disconnect the old credential. Creating a new one does not upgrade or revoke the old one.
 
 ```toml

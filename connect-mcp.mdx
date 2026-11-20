@@ -198,7 +198,7 @@ They run the same operations as the [phone REST routes](/phone-plan#a-call) and 
 
 In Settings \> Connected clients \> **Connected AI clients**, choose **Read**, turn on **Phone tools (owner approval required)** and create a new connection. This adds all three phone scopes to the read scopes; it does not upgrade an old key or create a phone-only credential. For OAuth, the host must request `phone:read` and `phone:call` for the call journey; approve `phone:text` only if needed.
 
-A preview returns `approval.url` for the signed-in owner unless standing approval covers it. Unless the preview returned `standing: true`, read the task until `approved` is true. Then start the unchanged request with the preview's `id` and `spend_bound_cents`. `reserved` means queued, not dialing. Poll the task for its recorded outcome; a finished call does not reopen the assistant chat. No tool approves, buys, subscribes or tops up. Follow [Your first call](/phone-plan#your-first-call) for setup, limits and refusal help. Public purchase and a complete assistant-to-handset journey are not yet verified as available.
+A preview returns `approval.url` for the signed-in owner unless standing approval covers it. Unless the preview returned `standing: true`, read the task until `approved` is true. Then start the unchanged request with the preview's `id` and `spend_bound_cents`. `reserved` means queued, not dialing. Poll the task for its recorded outcome; a finished call does not reopen the assistant chat. No tool approves, buys, subscribes or tops up. Follow [Your first call](/phone-plan#your-first-call) for setup, limits and refusal help.
 
 ## Operator tools
 
@@ -505,7 +505,7 @@ What a key cannot do:
 - **Make another key.** Only an owner signed in to the App can, so a key cannot mint a narrower one.
 - **Use the Builder.** The Builder's jobs (start, answer, review, apply) run inside the signed-in app. They are not on the API, and a key does not open them.
 
-A connector that signs in with OAuth, such as a ChatGPT connector, uses the sign-in above. No real account has proven it yet ([Supported clients](/supported-clients)).
+A connector that signs in with OAuth, such as a ChatGPT connector, uses the sign-in above.
 
 ## Clients
 

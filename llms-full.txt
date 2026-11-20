@@ -614,7 +614,7 @@ They run the same operations as the [phone REST routes](https://api.sempera.org/
 
 In Settings > Connected clients > **Connected AI clients**, choose **Read**, turn on **Phone tools (owner approval required)** and create a new connection. This adds all three phone scopes to the read scopes; it does not upgrade an old key or create a phone-only credential. For OAuth, the host must request `phone:read` and `phone:call` for the call journey; approve `phone:text` only if needed.
 
-A preview returns `approval.url` for the signed-in owner unless standing approval covers it. Unless the preview returned `standing: true`, read the task until `approved` is true. Then start the unchanged request with the preview's `id` and `spend_bound_cents`. `reserved` means queued, not dialing. Poll the task for its recorded outcome; a finished call does not reopen the assistant chat. No tool approves, buys, subscribes or tops up. Follow [Your first call](https://api.sempera.org/docs/phone-plan.md#your-first-call) for setup, limits and refusal help. Public purchase and a complete assistant-to-handset journey are not yet verified as available.
+A preview returns `approval.url` for the signed-in owner unless standing approval covers it. Unless the preview returned `standing: true`, read the task until `approved` is true. Then start the unchanged request with the preview's `id` and `spend_bound_cents`. `reserved` means queued, not dialing. Poll the task for its recorded outcome; a finished call does not reopen the assistant chat. No tool approves, buys, subscribes or tops up. Follow [Your first call](https://api.sempera.org/docs/phone-plan.md#your-first-call) for setup, limits and refusal help.
 
 ## Operator tools
 
@@ -921,7 +921,7 @@ What a key cannot do:
 * **Make another key.** Only an owner signed in to the App can, so a key cannot mint a narrower one.
 * **Use the Builder.** The Builder's jobs (start, answer, review, apply) run inside the signed-in app. They are not on the API, and a key does not open them.
 
-A connector that signs in with OAuth, such as a ChatGPT connector, uses the sign-in above. No real account has proven it yet (supported-clients.md).
+A connector that signs in with OAuth, such as a ChatGPT connector, uses the sign-in above.
 
 ## Clients
 
@@ -2132,13 +2132,13 @@ URL: https://api.sempera.org/docs/phone-plan.md
 
 Sempera Phone gives one workspace one number that its AI assistants can use: Claude, ChatGPT/Codex, Grok Bot and Muse. It is separate from business plans. It carries no business onboarding, no managed support and no entitlement on them. See the [pricing page](https://sempera.org/pricing) for pricing.
 
-The API and the MCP tools can use a plan. They cannot buy one. Signup and checkout belong on the owner's Billing > Phone plan page. Cancel happens there too, or through `POST /v1/phone-plan/cancel` with the owner's own workspace key (an assistant's phone credential cannot cancel). While `published` is false in the plan's configuration, no checkout starts and the page offers none. Connecting an assistant does not activate a plan, assign a number or publish an agent. A complete assistant-to-handset call has not yet been verified.
+The API and the MCP tools can use a plan. They cannot buy one. Signup and checkout belong on the owner's Billing > Phone plan page. Cancel happens there too, or through `POST /v1/phone-plan/cancel` with the owner's own workspace key (an assistant's phone credential cannot cancel). While `published` is false in the plan's configuration, no checkout starts and the page offers none. Connecting an assistant does not activate a plan, assign a number or publish an agent.
 
 ## Your first call
 
 These steps need an active plan funded for real calls, an answering number and a published Sempera agent pinned to the plan. Under Billing > Phone plan, **Agent for this line** shows the pin. After the agent is published and its number connected, enter its **Agent ID** and **Published version ID**, then choose **Pin published agent**. If the number or real-call setup is missing, contact hello@sempera.org; connecting an assistant alone cannot supply it.
 
-1. Connect your assistant: [Claude](https://api.sempera.org/docs/connect-claude.md), [ChatGPT](https://api.sempera.org/docs/connect-chatgpt.md) or [Codex](https://api.sempera.org/docs/connect-codex.md), [Grok Bot](https://api.sempera.org/docs/connect-grok.md), or [Muse](https://api.sempera.org/docs/connect-muse.md). The guides distinguish Sempera's implemented connection from unverified assistant setup steps.
+1. Connect your assistant: [Claude](https://api.sempera.org/docs/connect-claude.md), [ChatGPT](https://api.sempera.org/docs/connect-chatgpt.md) or [Codex](https://api.sempera.org/docs/connect-codex.md), [Grok Bot](https://api.sempera.org/docs/connect-grok.md), or [Muse](https://api.sempera.org/docs/connect-muse.md).
 2. Open Settings > Connected clients and check the phone permission. For a bearer MCP connection, under **Connected AI clients**, choose the client and **Read** access, turn on **Phone tools (owner approval required)**, then choose **Connect client**. Use the new key in your assistant; an old key is not upgraded. This adds all three phone scopes to the agent-read scopes. For OAuth, approve `phone:read` and `phone:call` during sign-in; if missing, sign in again requesting them. For the Muse credential, keep **See the number and results** on and turn on **Place calls** before creating it. The list shows each credential's scopes, not an edit switch for an existing grant.
 3. Ask the assistant for your Sempera number and plan state first. Then ask it to call your own reachable US or Canadian phone number, with a short task such as "Tell me this is my first Sempera call, then end the call." Supply your real number, not an invented documentation number. Keep the task to 1,500 characters or fewer and choose only the actions it needs.
 4. The assistant previews the call and gives you `approval.url`. Preview dials nothing and reserves nothing. Open the link signed in to Sempera, check the destination, task, permitted actions, maximum length and spend bound, then approve or decline. A matching standing approval can cover the request instead.
@@ -4998,7 +4998,7 @@ This guide is setup guidance, not proof that your account can connect; which ass
 
 ## Add Sempera as a custom MCP server
 
-ChatGPT's current connector screens and account availability have not been verified here. If your account offers a custom remote MCP server:
+If your account offers a custom remote MCP server:
 
 1. Enter the server URL below and use OAuth with dynamic client registration if offered. Sempera does not support Client Metadata Documents.
 2. Follow ChatGPT's sign-in flow to Sempera's consent page.
@@ -5081,7 +5081,7 @@ This guide is setup guidance, not proof that your account can connect; which ass
 
 ## The Claude app
 
-Claude's current connector screens and plan availability have not been verified here. If your Claude app offers a custom remote MCP connector:
+If your Claude app offers a custom remote MCP connector:
 
 1. Enter `https://api.sempera.org/v1/mcp` as its server URL.
 2. Use OAuth with automatic client registration if offered. Sempera supports dynamic registration, not Client Metadata Documents.
@@ -5091,7 +5091,7 @@ Sempera recognises `https://claude.ai/api/mcp/auth_callback` as Claude's redirec
 
 ## Claude Code
 
-Sempera's setup command is below. The `/mcp` browser sign-in step is guidance only and has not been checked in a real Claude Code build:
+Sempera's setup command is below:
 
 ```bash
 claude mcp add --transport http sempera https://api.sempera.org/v1/mcp
@@ -5162,7 +5162,7 @@ This guide is setup guidance, not proof that your account can connect; which ass
 
 ## Add the server and sign in
 
-Add the server to `~/.codex/config.toml`. This URL/config shape is included in Sempera's setup guidance. Codex's current OAuth commands and flags have not been verified here.
+Add the server to `~/.codex/config.toml`.
 
 ```toml
 [mcp_servers.sempera]
@@ -5174,7 +5174,7 @@ If your Codex build offers OAuth, use its MCP sign-in instructions with dynamic 
 ## Or use a credential
 
 1. In Settings > Connected clients, under **Connected AI clients**, select **Codex** and **Read** access. Turn on **Phone tools (owner approval required)** and choose **Connect client**. Store the key shown once in your local `SEMPERA_PHONE_KEY` environment variable, using your usual secret manager rather than committing it.
-2. Use the TOML below. This bearer configuration is present in Sempera's setup guidance; loading it in a real Codex build remains unverified. The key works on MCP only and adds all three phone scopes to the read scopes. An ordinary workspace API key is refused on the phone tools.
+2. Use the TOML below. The key works on MCP only and adds all three phone scopes to the read scopes. An ordinary workspace API key is refused on the phone tools.
 3. If replacing an older connection, update the key in Codex and disconnect the old credential. Creating a new one does not upgrade or revoke the old one.
 
 ```toml
@@ -5248,7 +5248,7 @@ Codex is a trademark of its owner, used here only to say which assistant connect
 # Connect Grok
 URL: https://api.sempera.org/docs/connect-grok.md
 
-Sempera offers an MCP endpoint for compatible assistants. Grok Bot's custom-server UI and authentication have not been verified here; this is conditional guidance, not a proven Grok Bot connection.
+Sempera offers an MCP endpoint for compatible assistants.
 
 This guide is setup guidance, not proof that your account can connect; which assistants are available today is on [sempera.org](https://sempera.org/ai-context/). See also [Supported clients](https://api.sempera.org/docs/supported-clients.md#ai-assistants). If a screen differs from these steps, tell hello@sempera.org and this page will be corrected.
 
@@ -5260,7 +5260,7 @@ If Grok Bot offers a custom remote MCP server, enter:
 https://api.sempera.org/v1/mcp
 ```
 
-Sempera's side supports these two connection methods, but neither has been verified in Grok Bot:
+Sempera supports these two connection methods:
 
 - **If Grok Bot offers OAuth**, use dynamic registration, sign in as the Sempera workspace owner, and approve `phone:read` and `phone:call` (optionally `phone:text`). An unknown redirect appears as an unverified app on Sempera's consent page. Check the name and host before approving.
 - **If Grok Bot accepts a secret bearer header**, open Settings > Connected clients > **Connected AI clients**, choose **Any other client** and **Read** access, turn on **Phone tools (owner approval required)** and choose **Connect client**. This creates an MCP-only key with all three phone scopes as well as read access to agents. Use the key only in the client's secure connector credential field, never in chat. The header format is `Authorization: Bearer <phone-enabled-mcp-key>`; replace the placeholder with the key shown once.
@@ -5322,7 +5322,7 @@ Grok is a trademark of its owner, used here only to say which assistant connects
 # Connect Muse
 URL: https://api.sempera.org/docs/connect-muse.md
 
-Sempera provides a scoped REST credential for Muse. If your Muse account can build a custom API connector and store its credential securely, it can use Sempera's OpenAPI description. That Muse capability and its screens have not been verified here; this is conditional guidance, not a proven connection.
+Sempera provides a scoped REST credential for Muse. If your Muse account can build a custom API connector and store its credential securely, it can use Sempera's OpenAPI description.
 
 This guide is setup guidance, not proof that your account can connect; which assistants are available today is on [sempera.org](https://sempera.org/ai-context/). See also [Supported clients](https://api.sempera.org/docs/supported-clients.md#ai-assistants). If a screen differs from these steps, tell hello@sempera.org and this page will be corrected.
 

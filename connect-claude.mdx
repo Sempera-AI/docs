@@ -12,7 +12,7 @@ This guide is setup guidance, not proof that your account can connect; which ass
 
 ## The Claude app
 
-Claude's current connector screens and plan availability have not been verified here. If your Claude app offers a custom remote MCP connector:
+If your Claude app offers a custom remote MCP connector:
 
 1. Enter `https://api.sempera.org/v1/mcp` as its server URL.
 2. Use OAuth with automatic client registration if offered. Sempera supports dynamic registration, not Client Metadata Documents.
@@ -22,7 +22,7 @@ Sempera recognises `https://claude.ai/api/mcp/auth_callback` as Claude's redirec
 
 ## Claude Code
 
-Sempera's setup command is below. The `/mcp` browser sign-in step is guidance only and has not been checked in a real Claude Code build:
+Sempera's setup command is below:
 
 ```bash
 claude mcp add --transport http sempera https://api.sempera.org/v1/mcp

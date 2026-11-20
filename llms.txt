@@ -88,7 +88,7 @@ Paid plans are not open for purchase yet. Confirm the current plan and checkout 
 - [Migration and changelog](https://api.sempera.org/docs/changelog.md): the one-API cutover, retired hostnames, deprecation policy.
 - [Security and privacy](https://api.sempera.org/docs/security-and-privacy.md): how workspaces are kept apart, how credentials, scopes, secrets and signed links work, how call data behaves in the API, and how to report a concern.
 - [Billing boundaries](https://api.sempera.org/docs/billing-boundaries.md): what the API never does with money, which usage and cost reads exist, and where plans and invoices are managed.
-- [Supported clients](https://api.sempera.org/docs/supported-clients.md): how you can connect today (any HTTP client, browsers, coding-agent clients over MCP), what Sempera has verified, what it has not, and what is not available.
+- [Supported clients](https://api.sempera.org/docs/supported-clients.md): how you can connect today (any HTTP client, browsers, coding-agent clients over MCP): each road, its sign-in, its scopes and its setup guide.
 - [Connect ChatGPT](https://api.sempera.org/docs/connect-chatgpt.md): add Sempera Phone to ChatGPT as a custom MCP server with OAuth, the permissions it can hold, and how an approved call runs.
 - [Connect Claude](https://api.sempera.org/docs/connect-claude.md): add Sempera Phone as a custom connector in the app, or as a remote HTTP server from the terminal, both signed in with OAuth.
 - [Connect Codex](https://api.sempera.org/docs/connect-codex.md): add Sempera Phone to Codex in config.toml, sign in with OAuth or a phone credential, and the phone tools it sees.
