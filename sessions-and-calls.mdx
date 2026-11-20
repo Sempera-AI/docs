@@ -113,7 +113,7 @@ Token and character demand come from `01-company/cogs-model.json`, the same inpu
 
 ### Canadian-dollar display conversion boundary
 
-The dated `usd_cad` input multiplies a stored estimate (into `price_per_minute_cad`); a derived estimate is computed in Canadian dollars with it, once, in `06-tools/finance/build-finance-unit-economics.py`. That input identifies the Bank of Canada FXUSDCAD observation dated 2026-11-06: 1.4113 CAD per USD. The reader parses the literal input and evidence without executing the workbook generator or fetching a live rate. `fx` carries `source` (the Bank of Canada observation URL), `date` (the observation date, not today's date), `rate` and `unit: CAD per USD`. Neither the planning stress rate nor an undated rate is a substitute. This dated observation is not represented as a current FX quote.
+The dated `usd_cad` input multiplies a stored estimate (into `price_per_minute_cad`); a derived estimate is computed in Canadian dollars with it, once, in `06-tools/finance/build-finance-unit-economics.py`. That input identifies one dated Bank of Canada FXUSDCAD observation; its date and rate are returned in `fx`. The reader parses the literal input and evidence without executing the workbook generator or fetching a live rate. `fx` carries `source` (the Bank of Canada observation URL), `date` (the observation date, not today's date), `rate` and `unit: CAD per USD`. Neither the planning stress rate nor an undated rate is a substitute. This dated observation is not represented as a current FX quote.
 
 If either finance file, its required units or its provenance cannot be read, the derived value and currency are null and the basis is `unknown`. Deployments that do not carry the finance generator therefore show no derived CAD estimate. The server never bakes in a fallback rate and never relabels a USD amount as a derived CAD one.
 
@@ -204,7 +204,7 @@ An owner can rehearse an agent by calling the owner's own verified sign-in phone
 
 For this agent-mode rehearsal, no `agent_version` or `consent_basis` has to be named. When no version or production environment is requested and no production version is pinned, the newest published version is used, never a draft. An existing production pin or an explicitly requested version is still respected. Publish a version first if the agent has only a draft. Sempera records the server-side consent basis as `owner_rehearsal` and audits the rehearsal with only the destination's last four digits.
 
-Calling hours still apply, with the same `outside_calling_hours` refusal and no override. The do-not-contact list, idempotency key, call caps, gateway checks, recording rules and the rule that `from` must be one of the agent's own answering numbers or an answering number marked shared in the same workspace still apply. This exception does not open paid plans or publish the Phone Plan. Every other outbound call still needs its ordinary version pin and consent.
+Calling hours still apply, with the same `outside_calling_hours` refusal and no override. The do-not-contact list, idempotency key, call caps, gateway checks, recording rules and the rule that `from` must be one of the agent's own answering numbers or an answering number marked shared in the same workspace still apply. Every other outbound call still needs its ordinary version pin and consent.
 
 ```http
 POST /v1/calls
@@ -391,4 +391,4 @@ When `from` is omitted, the agent's own first answering number takes precedence.
 
 Outbound caller ID is the only effect. People calling back still reach the one agent the number is bound to. Sharing gives no access to that agent's transcripts, recordings, SMS or configuration. Pending, released or orphaned numbers cannot be shared caller IDs. Rebinding within the workspace keeps the flag on the same number, but the line must be answering again before another agent can use it. Deletion or a move to another workspace cannot leave the old workspace using it.
 
-Buying, porting, inbound binding, SIP, consent, recording, calling hours, do-not-contact screening, prices and billing are unchanged. Paid plans remain closed, payment processing remains in test mode, and the unpublished Phone Plan's number rules and publication state are unchanged.
+Buying, porting, inbound binding, SIP, consent, recording, calling hours, do-not-contact screening, prices and billing are unchanged.

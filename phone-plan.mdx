@@ -7,7 +7,7 @@ description: "One number your AI assistants can use: limits, calls, texts, appro
 
 Sempera Phone gives one workspace one number that its AI assistants can use: Claude, ChatGPT/Codex, Grok Bot and Muse. It is separate from business plans. It carries no business onboarding, no managed support and no entitlement on them. See the [pricing page](https://sempera.org/pricing) for pricing.
 
-The API and the MCP tools can use a plan. They cannot buy one. Signup and checkout belong on the owner's Billing \> Phone plan page. Cancel happens there too, or through `POST /v1/phone-plan/cancel` with the owner's own workspace key (an assistant's phone credential cannot cancel). Public purchase is not open: while `published` is false in its configuration, no checkout starts and the page offers none. Connecting an assistant does not activate a plan, assign a number or publish an agent. A complete assistant-to-handset call has not yet been verified.
+The API and the MCP tools can use a plan. They cannot buy one. Signup and checkout belong on the owner's Billing \> Phone plan page. Cancel happens there too, or through `POST /v1/phone-plan/cancel` with the owner's own workspace key (an assistant's phone credential cannot cancel). While `published` is false in the plan's configuration, no checkout starts and the page offers none. Connecting an assistant does not activate a plan, assign a number or publish an agent. A complete assistant-to-handset call has not yet been verified.
 
 ## Your first call
 
@@ -66,7 +66,7 @@ Inbound while a call is live, or with nothing left, hears a busy message. An inb
 
 | Refusal | What it means | What to do |
 | --- | --- | --- |
-| `PHONE_PLAN_INACTIVE` | There is no active plan, its paid period or pilot ended, or payment is overdue or reversed. | Check Billing \> Phone plan. Public purchase is not open; if you have no usable plan, contact Sempera rather than retrying the assistant. |
+| `PHONE_PLAN_INACTIVE` | There is no active plan, its paid period or pilot ended, or payment is overdue or reversed. | Check Billing \> Phone plan. If you have no usable plan, contact Sempera rather than retrying the assistant. |
 | `PHONE_AGENT_UNPINNED` | No published agent version is selected for this line. | Publish the agent, then use **Pin published agent** under Billing \> Phone plan with its agent ID and published version ID. |
 | `PHONE_NUMBER_MISSING` | The pinned agent has no answering number ready to call from. | Have Sempera connect and activate an owned number for that agent, then pin the published agent to the plan. Typing a number into a task does not set up your line. |
 | `PHONE_TEXTING_UNAVAILABLE` | The line's number cannot send texts, so a text preview is refused before you are asked to approve it. With the `phone:text` scope, `phone_get_profile` lists it in `missing` and answers `text_ready: false`. | Contact Sempera to make the line's number text-capable. Calls are not affected. |
