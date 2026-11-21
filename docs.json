@@ -89,6 +89,7 @@
               "connect-chatgpt",
               "connect-claude",
               "connect-codex",
+              "connect-copilot",
               "connect-grok",
               "connect-muse"
             ]

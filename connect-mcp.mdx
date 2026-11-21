@@ -299,7 +299,7 @@ This section is written from the hosted server's own tool list each time a tool 
 | `reparse_knowledge_source` | Reprocess a knowledge source | `knowledge:write` | No | Yes | No | none |
 | `get_agent_authoring_context` | Read everything needed to write or judge an agent | `agents:read` | Yes | Yes | Yes | none |
 | `test_agent_turn` | Play the caller for one turn of a typed test | `agents:write` and `tests:write` | No | Yes | No | none |
-| `judge_test_locally` | Read the rubric to grade a test yourself | `agents:read` | Yes | Yes | Yes | none |
+| `grade_test_run` | Read a test's pass conditions to grade a test run | `agents:read` | Yes | Yes | Yes | none |
 | `create_agent` | Create a draft agent | `agents:write` | No | Yes | Yes | none |
 | `update_agent_draft` | Edit an agent's draft | `agents:write` | No | Yes | Yes | none |
 | `run_agent_tests` | Run the agent's offline test battery | `tests:write` | No | Yes | No | none |
@@ -364,7 +364,7 @@ Your assistant can test an agent turn by turn and grade the result itself. It pl
 | Tool | Runs | Scope | Arguments | Changes anything? |
 | --- | --- | --- | --- | --- |
 | `test_agent_turn` | One typed turn of the agent, on Sempera's model | `agents:write` and `tests:write` | agent\_id (required), caller\_message (required), history, version (`draft` or `published`, default `draft`) | Yes |
-| `judge_test_locally` | The reads `get_agent_authoring_context` uses; no model | `agents:read` | agent\_id (required) | No |
+| `grade_test_run` | The reads `get_agent_authoring_context` uses; no model | `agents:read` | agent\_id (required) | No |
 
 `test_agent_turn` is the one tool on this page built to spend Sempera's model budget on purpose: the agent has to answer as itself, so its side of the turn runs on Sempera's model. Each call is one agent turn, counts one message against the workspace's daily typed test allowance (the same allowance the App's Test and `run_agent_conversation` use), and reports what it used in `usage`. Your assistant's own thinking (writing the caller's lines, grading) costs Sempera nothing.
 
@@ -376,7 +376,7 @@ Your assistant can test an agent turn by turn and grade the result itself. It pl
 - **On a draft, each call compiles the draft again**, so it also counts against the daily limit on tests of unpublished changes. Test the published version (`"version": "published"`) when you are not testing an edit.
 - **Refusals.** A reached allowance is `rate_limited` with `retry_after_s` and the sentence a person reads. An agent in another workspace is `not_found`, the same as an id that does not exist. A credential without both scopes is `insufficient_scope`.
 
-`judge_test_locally` returns a rubric and runs no model: `checks` (the agent's test scenarios, each with `when`, `until` and `steps`), `success_criteria` (what each check says must hold, one row each), `conduct_rules` (four fixed rules, the agent's own instructions and its greeting), `how_to_grade` and `answer_format`. Your assistant reads the transcript against it and gives a verdict per item: `pass`, `fail` or `not_tested`. A check the conversation never reached is `not_tested`, not passed. A section this credential cannot read answers `{"unavailable": <code>}`.
+`grade_test_run` returns a rubric and runs no model: `checks` (the agent's test scenarios, each with `when`, `until` and `steps`), `success_criteria` (what each check says must hold, one row each), `conduct_rules` (four fixed rules, the agent's own instructions and its greeting), `how_to_grade` and `answer_format`. Your assistant reads the transcript against it and gives a verdict per item: `pass`, `fail` or `not_tested`. A check the conversation never reached is `not_tested`, not passed. A section this credential cannot read answers `{"unavailable": <code>}`.
 
 ### A worked example
 
@@ -422,14 +422,14 @@ When the conversation is done, read the rubric and grade the transcript yourself
 curl -X POST https://api.sempera.org/v1/mcp \
   -H "Authorization: Bearer sempera_sk_..." \
   -H "Content-Type: application/json" \
-  -d '{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"judge_test_locally","arguments":{"agent_id":"northwind-barbers"}}}'
+  -d '{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"grade_test_run","arguments":{"agent_id":"northwind-barbers"}}}'
 ```
 
 A verdict your assistant might then write: "Books a haircut: pass (the agent offered two times and confirmed 14:30). Conduct: pass. Reschedules a booking: not\_tested."
 
 ### Usage on every result
 
-A tool result that involved no Sempera model call says so beside its `content`: `"usage": {"sempera_model_calls": 0}`. Every read carries it (the original three tools, the read tools, the follow-up reads, `get_agent_authoring_context`, `judge_test_locally`, the phone reads), and so does `update_agent_draft`, whose pre-check and save run no model. A refusal of one of those carries it too.
+A tool result that involved no Sempera model call says so beside its `content`: `"usage": {"sempera_model_calls": 0}`. Every read carries it (the original three tools, the read tools, the follow-up reads, `get_agent_authoring_context`, `grade_test_run`, the phone reads), and so does `update_agent_draft`, whose pre-check and save run no model. A refusal of one of those carries it too.
 
 `test_agent_turn` reports its real numbers there and in its answer: `sempera_model_calls` (at most one, including retries and tool follow-ups), `input_tokens`, `output_tokens`, `total_tokens` and `tokens_reported`. Tokens the model did not report read `null` with `tokens_reported: false`; they are never estimated in the answer. Refusals before the agent runs report zero, and failures after a request retain its count. If a tool answer or a rejected draft would need another model request, it is stopped: `reply` is empty and `note` explains that no reply was completed. Do not grade an incomplete turn as a pass.
 
@@ -454,7 +454,7 @@ Every write requires `idempotency_key`. Reuse it only for an identical retry. A 
 | Tool | Method and path | Scope | Arguments besides idempotency\_key | Changes anything? |
 | --- | --- | --- | --- | --- |
 | `save_agent_version` | `POST /v1/agents/{agent_id}/versions` | `agents:write` | agent\_id | Yes |
-| `publish_agent_version` | `POST /v1/agents/{agent_id}/publish` | `agents:publish` | agent\_id, reason, confirm (the agent\_id again); optional expect\_revision | Yes |
+| `publish_agent_version` | `POST /v1/agents/{agent_id}/publish` | `agents:publish` | agent\_id, reason, decided\_by (the approving person's full name), confirm (the agent\_id again); optional expect\_revision | Yes |
 | `run_agent_simulations` | `POST /v1/agents/{agent_id}/simulations` | `tests:write` | agent\_id, scenario\_keys, optional repeats | Yes |
 | `bind_phone_number` | `POST /v1/phone-numbers` | `phone_numbers:write` | agent\_id, number | Yes |
 | `create_knowledge_source` | `POST /v1/knowledge-sources/text` | `knowledge:write` | agent\_id, name ending in .txt, content | Yes |
@@ -470,9 +470,9 @@ Every write requires `idempotency_key`. Reuse it only for an identical retry. A 
 
 Follow-up reads are `get_knowledge_content` (`source_id`, `knowledge:read`, `GET /v1/knowledge/{uuid}/content`), `get_agent_simulation` (`agent_id`, `simulation_id`, `tests:read`, `GET /v1/agents/{agent_id}/simulations/{simulation_id}`) and `get_agent_draft_changes` (`agent_id`, `agents:read`, `GET /v1/agents/{agent_id}/draft`). For `get_knowledge_content`, pass the library `id` from `list_knowledge_sources` or `get_knowledge_source`, or pass the `content_id` from `create_knowledge_source`. If no text is stored, the tool returns `data.content: null` and an explanation. To edit text, use the `content_id` and pass the `data.version_id` that you read as `expect_version_id`. A stale edit is refused.
 
-`get_agent_draft_changes` compares the draft with the published version, using the same list the App's publish confirmation shows: `changes` has one row per setting that would change (`key`, `label`, `risk`, `before`, `after`, and `truncated` when a value was shortened to fit), `blocking` lists anything that would refuse the publish, and `ready_to_publish` is true only when something would change and nothing blocks it. It also returns the draft's `revision` and `risk_max`. A draft whose highest risk is `HIGH` needs the full name of the person deciding, which `publish_agent_version` does not take, so the tool refuses it with `conflict` and a person publishes it from the App.
+`get_agent_draft_changes` compares the draft with the published version, using the same list the App's publish confirmation shows: `changes` has one row per setting that would change (`key`, `label`, `risk`, `before`, `after`, and `truncated` when a value was shortened to fit), `blocking` lists anything that would refuse the publish, and `ready_to_publish` is true only when something would change and nothing blocks it. It also returns the draft's `revision` and `risk_max`. A draft whose highest risk is `HIGH` needs the full name of the person deciding, which `publish_agent_version` takes as `decided_by`.
 
-`publish_agent_version` publishes only when `confirm` repeats the `agent_id`. A call without it, or with any other value, is refused `validation_failed` naming `confirm`, and nothing is published. A credential without `agents:publish` is refused `insufficient_scope` before its arguments are read.
+`publish_agent_version` publishes only when `confirm` repeats the `agent_id`. A call without it, or with any other value, is refused `validation_failed` naming `confirm`, and nothing is published. It also needs `decided_by`, the full name of the person approving the publication, for example `Robert Vukosa`: two or more words of letters, hyphens or apostrophes. A name inside a sentence (`Robert Vukosa approves this publication`) is read as the name. In-chat tool approval in your assistant does not supply it, so ask the user. A call without a full name is refused `validation_failed` naming `decided_by` and the format, and nothing is published. A credential without `agents:publish` is refused `insufficient_scope` before its arguments are read.
 
 1. Connect with the narrowest access needed and call `tools/list` to discover available tools.
 2. Use `create_agent` with a synthetic business name, then `get_agent_draft` and `update_agent_draft` with the returned revision. The App reads the same draft.

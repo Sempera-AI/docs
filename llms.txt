@@ -12,8 +12,8 @@ Key facts:
 
 ## Pricing context
 
-- Start: C$129 a month for 300 included minutes.
-- Growth: C$249 a month for 700 included minutes.
+- Start: C$129 a month for 300 included minutes, or C$1,290 a year.
+- Growth: C$249 a month for 700 included minutes, or C$2,490 a year.
 - Larger plans: [contact Sempera](https://sempera.org/about/#contact).
 - 10 free minutes to try it on [sign-up](https://app.sempera.org/sign-up).
 - Credit packs, one-off and in Canadian dollars: C$20 for 200 credits; C$50 for 550 credits; C$100 for 1,200 credits. Credits are not included call minutes.
@@ -92,6 +92,7 @@ Paid plans are not open for purchase yet. Confirm the current plan and checkout 
 - [Connect ChatGPT](https://api.sempera.org/docs/connect-chatgpt.md): add Sempera Phone to ChatGPT as a custom MCP server with OAuth, the permissions it can hold, and how an approved call runs.
 - [Connect Claude](https://api.sempera.org/docs/connect-claude.md): add Sempera Phone as a custom connector in the app, or as a remote HTTP server from the terminal, both signed in with OAuth.
 - [Connect Codex](https://api.sempera.org/docs/connect-codex.md): add Sempera Phone to Codex in config.toml, sign in with OAuth or a phone credential, and the phone tools it sees.
+- [Connect Microsoft 365 Copilot](https://api.sempera.org/docs/connect-copilot.md): add Sempera Phone as an MCP plugin for a declarative agent, signed in with OAuth.
 - [Connect Grok](https://api.sempera.org/docs/connect-grok.md): add Sempera Phone by URL, with OAuth if the app offers it or a scoped phone credential if not.
 - [Connect Muse](https://api.sempera.org/docs/connect-muse.md): build a Muse custom connector from the OpenAPI document with a scoped phone credential, and the routes it uses.
 - [TypeScript and Python SDKs](https://api.sempera.org/docs/sdks.md): official clients generated from the OpenAPI document: install, authentication, errors, pagination, idempotency keys and webhook signature verification.
