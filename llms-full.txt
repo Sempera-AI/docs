@@ -1102,11 +1102,13 @@ An agent has a contact card and owner-provided business details: `display_name`,
 # Custom model connections
 URL: https://api.sempera.org/docs/custom-models.md
 
-Custom model setup is in limited testing. Contact Sempera to confirm whether your workspace can test a custom model connection. Check the [live OpenAPI contract](https://api.sempera.org/openapi.json) for the supported developer operations.
+Custom LLM is available in every workspace. In the agent editor, open the Model menu and choose Custom LLM. Check the [live OpenAPI contract](https://api.sempera.org/openapi.json) for the supported developer operations.
 
 `POST /v1/agents/{agent_id}/custom-llm/test` checks whether Sempera can reach an endpoint and get a compatible response. The test does not save a credential, publish an agent or place a call.
 
-Where saving is enabled, `POST /v1/agents/{agent_id}/custom-llm` stores the credential and updates the agent's draft. Send the current draft revision in `expect_revision`. Confirm that a published agent uses the chosen model before relying on it in production.
+`POST /v1/agents/{agent_id}/custom-llm` stores the credential and updates the agent's draft. Send the current draft revision in `expect_revision`. Publish the draft to use the custom model on calls.
+
+`POST /v1/agents/{agent_id}/custom-llm/remove` switches the draft back to the workspace's default model. Send the current draft revision in `expect_revision`, then publish to use the default model on calls.
 
 Use a public HTTPS base address without credentials, a query or a fragment. Sempera appends the chat completions path. Use a key dedicated to Sempera and provide it in the connection form or the write-only `api_key` field. See secrets-and-signing.md for secret storage and agents.md for publishing and versions.
 

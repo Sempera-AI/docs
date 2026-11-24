@@ -46,7 +46,9 @@ These routes require an active workspace and access to the agent. Reads need `ca
 | `GET /v1/agents/{agent_id}/messaging` | Reports channel setup and remaining activation requirements. |
 | `GET /v1/agents/{agent_id}/messaging/{channel}/conversations` | Lists stored conversations with `page` and `page_size`. |
 | `GET /v1/agents/{agent_id}/messaging/{channel}/conversations/{conversation_id}` | Reads a conversation belonging to this channel, agent and workspace. |
-| `POST /v1/agents/{agent_id}/messaging/{channel}/messages` | Requires `calls:write` and send admission, then refuses with `409 owner_setup_required`. No message is queued or delivered. |
+| `POST /v1/agents/{agent_id}/messaging/{channel}/messages` | For `whatsapp`, submit one approved template when enabled. Requires `calls:write`, send admission and an `Idempotency-Key`. Returns `202` with the provider message ID and status, not a delivery receipt. RCS and iMessage still refuse with `409 owner_setup_required`. |
+
+For WhatsApp, send `connector_id` shown under the saved connection in Integrations, `from` and `to` in international E.164 format, `template_sid` for the approved template and `consent_basis` describing how the recipient opted in. Use optional `template_variables` for numbered text substitutions. This endpoint does not accept free text or fall back to SMS. Do not submit again with a new idempotency key if the provider outcome is unknown.
 
 ## Voices
 
