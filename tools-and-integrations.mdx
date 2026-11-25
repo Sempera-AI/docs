@@ -61,6 +61,18 @@ Open Connections and choose a provider. A provider that is not available yet say
 
 Disconnect removes the connection stored for this workspace. If the provider confirms the revocation, Sempera has forgotten the grant. If another connection is still signed in as the same account, that account's access is left in place. If the provider does not confirm the revocation, the App asks you to remove Sempera's access in that provider's own settings. You do not register Sempera's apps or set values on Sempera's servers.
 
+## Console integration availability
+
+A listing does not mean an app can be connected. Check each app's availability before starting setup.
+
+| App | Availability |
+| --- | --- |
+| [iMessage](https://sempera.org/integrations/imessage/) | Status today: Built, not released. Tested offline only; live proof is still needed. |
+| [Google Sheets](https://sempera.org/integrations/google-sheets/) | Status today: Built, not released. Tested offline only; live proof is still needed. |
+| [Google Slides](https://sempera.org/integrations/google-slides/) | Status today: In beta. You can connect it from Integrations; live proof is still needed. |
+| [Google Forms](https://sempera.org/integrations/google-forms/) | Status today: In beta. You can connect it from Integrations; live proof is still needed. |
+| [iCloud Contacts](https://sempera.org/integrations/icloud-contacts/) | Status today: Built, not released. Tested offline only; live proof is still needed. |
+
 ## Hosted console connection routes
 
 These authenticated console routes use the workspace's one connection registry in Sempera's database when that database is the canonical client store. They do not create another registry or automatically import a file kept on Sempera's servers. Configuration needs the `configure_integration` capability and workspace-wide scope; checks need `run_local_test`. The database independently isolates the stored rows. Workspace status and billing entitlement are checked before use; an explicit `connectors.enabled=false` disables connections. Disconnect remains available for credential cleanup.
