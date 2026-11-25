@@ -16,7 +16,7 @@ One hostname does not mean one credential. Each class exists for one job and can
 | Service key (`kind: service`) | An internal Sempera service | Bearer | Publish, manage keys |
 | CI key (`kind: ci`) | Deployment and smoke automation | Bearer, read-only scopes | Write anything |
 | Admin key (`kind: admin`) | A workspace owner's elevated automation | Bearer | Leave its workspace |
-| OAuth client | ChatGPT, Claude, Codex or Grok Bot, approved by a workspace owner | `Authorization: Bearer sempera_at_...`, one hour, refreshed by a rotating token | Reach anything but `POST /v1/mcp`, or hold a scope beyond `phone:read`, `phone:call` and `phone:text` |
+| OAuth client | ChatGPT, Claude, Codex or Grok Bot, approved by a workspace owner | `Authorization: Bearer sempera_at_...`, one hour, refreshed by a rotating token | Reach anything but `POST /v1/mcp`, or hold a scope the owner did not approve on the consent screen (phone scopes, the management permissions for workspace read, draft edit and publish, in-chat approval and call content; see [the consent list](/connect-mcp#sign-in-with-oauth)). It never makes purchases or billing changes, manages members or API keys, runs paid tests or writes knowledge sources |
 | REST client credential | A client that cannot do OAuth, such as Muse | `Authorization: Bearer <key>` | Reach anything but the phone routes and MCP endpoint, or buy anything |
 | Third-party webhook | The payment provider, the telephony carrier | The provider's own signature or shared token | Reach any other route |
 

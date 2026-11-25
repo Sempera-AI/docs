@@ -170,7 +170,7 @@ Successful JSON answers are saved. Most refused or failed operations release the
 | Anonymous (public routes), per IP | 60 requests per minute |
 | Carrier media-stream ingress, per IP (its own budget, never the anonymous one) | 600 requests per minute |
 
-These are the default request budgets; deployment settings may change them. Requests that reach the limiter carry `X-RateLimit-Limit`, `X-RateLimit-Remaining` and `X-RateLimit-Reset` (Unix seconds). A request-budget `429` carries `Retry-After` in seconds. Earlier authentication or routing refusals may have no rate-limit headers. Feature-specific `429` responses may instead report `retry_after_s` in the error. Back off exponentially.
+These are the default request budgets; deployment settings may change them. Requests that reach the limiter carry `X-RateLimit-Limit`, `X-RateLimit-Remaining` and `X-RateLimit-Reset` (Unix seconds). A request-budget `429` carries `Retry-After` in seconds. Earlier authentication or routing refusals may have no rate-limit headers. Feature-specific `429` responses may instead report `retry_after_s` in the error. Back off exponentially. If the request counter cannot be read, the request is refused with `503 service_unavailable` and `Retry-After`, and nothing ran.
 
 Separately from these request limits, a workspace owner may cap the outbound calls the workspace places per UTC hour and per UTC day. `POST /v1/calls` over a cap answers `429 rate_limited` with `retry_after_s` in the error, and places nothing; if the cap cannot be read it answers `503 service_unavailable` and places nothing ([Owner features in the App](/app-features)).
 

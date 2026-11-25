@@ -53,7 +53,7 @@ POST /v1/snippets
 
 | Status | When |
 | --- | --- |
-| `400` | A body field breaks a rule above, a version number is not a whole number, or a test's `arguments` is not an object |
+| `400` | A body field breaks a rule above, a version number is not a whole number or is outside 1 to 500, or a test's `arguments` is not an object |
 | `404` | No such snippet or version in this workspace, or a test of the draft when there is no draft |
 | `409` | The name is taken; the workspace already keeps 200 snippets or the snippet 500 versions; the snippet is archived; there is no draft to publish; the draft is identical to the latest version; someone else published or opened the draft at the same moment; an archive while a tool still pins it |
 | `503` | The deployment has no database to keep snippets in |
