@@ -1670,7 +1670,7 @@ Every other outbound call still needs its ordinary version pin and consent.
 ```http
 POST /v1/calls
 Idempotency-Key: owner-rehearsal-unique-intent
-{"agent_id": "northwind-barbers", "to": "+141****0123"}
+{"agent_id": "northwind-barbers", "to": "+14165550123"}
 ```
 
 The example destination must match this workspace owner's verified phone.
@@ -1768,7 +1768,7 @@ Send only one spelling of an option, including across `settings` and top-level a
 ```http
 POST /v1/calls
 Idempotency-Key: friday-3pm-ada
-{"agent_id": "northwind-barbers", "mode": "prompt", "phone_number": "+141****0123",
+{"agent_id": "northwind-barbers", "mode": "prompt", "phone_number": "+14165550123",
  "task": "Confirm Friday at 3pm. Ask whether that time still suits.",
  "first_sentence": "Hello, this is a quick call about Friday.",
  "voice": "voice_example", "language": "en",
@@ -2166,7 +2166,7 @@ MCP lists only the tools allowed by the connection's scopes. Muse can use the ma
 
 ## Limits
 
-A plan has limits on calls at once, calls and texts per hour and per day, call minutes per day, call length and, in limited mode, a monthly allowance. The current figures are on the [pricing page](https://sempera.org/pricing/). `GET /v1/phone-profile` answers what is left. A request over a limit is refused with the code below and starts nothing.
+A plan has limits on calls at once, calls and texts per hour and per day, call minutes per day, call length and, in limited mode, a monthly allowance. The current figures are on the [Sempera Phone page](https://sempera.org/ai-phone-number/#plan-limits). `GET /v1/phone-profile` answers what is left. A request over a limit is refused with the code below and starts nothing.
 
 | Limit                                              | Refusal                                           |
 | -------------------------------------------------- | ------------------------------------------------- |
@@ -2776,7 +2776,7 @@ POST /v1/snippets
 
 | Status | When                                                                                                                                                                                                                                                                                               |
 | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `400`  | A body field breaks a rule above, a version number is not a whole number, or a test's `arguments` is not an object                                                                                                                                                                                 |
+| `400`  | A body field breaks a rule above, a version number is not a whole number or is outside 1 to 500, or a test's `arguments` is not an object                                                                                                                                                          |
 | `404`  | No such snippet or version in this workspace, or a test of the draft when there is no draft                                                                                                                                                                                                        |
 | `409`  | The name is taken; the workspace already keeps 200 snippets or the snippet 500 versions; the snippet is archived; there is no draft to publish; the draft is identical to the latest version; someone else published or opened the draft at the same moment; an archive while a tool still pins it |
 | `503`  | The deployment has no database to keep snippets in                                                                                                                                                                                                                                                 |
@@ -4418,7 +4418,7 @@ The standard REST refusal has this shape (protocol and compatibility exceptions 
 | `service_unavailable`        | 503    | A required service or stored record cannot be read right now; check the operation's state before retrying a write                                                                                 |
 | `internal_error`             | 500    | Quote the `request_id` to support                                                                                                                                                                 |
 
-The plan limit codes (`CALL_RL_PLAN_*` and `SMS_RL_PLAN_*`) carry no figures here; the current figures are on the [pricing page](https://sempera.org/pricing/).
+The plan limit codes (`CALL_RL_PLAN_*` and `SMS_RL_PLAN_*`) carry no figures here; the current figures are on the [Sempera Phone page](https://sempera.org/ai-phone-number/#plan-limits).
 
 Quote `X-Request-Id` to support. Branch on the stable code, not the human-readable message.
 
@@ -4528,7 +4528,7 @@ Successful JSON answers are saved. Most refused or failed operations release the
 | Anonymous (public routes), per IP                                              | 60 requests per minute  |
 | Carrier media-stream ingress, per IP (its own budget, never the anonymous one) | 600 requests per minute |
 
-These are the default request budgets; deployment settings may change them. Requests that reach the limiter carry `X-RateLimit-Limit`, `X-RateLimit-Remaining` and `X-RateLimit-Reset` (Unix seconds). A request-budget `429` carries `Retry-After` in seconds. Earlier authentication or routing refusals may have no rate-limit headers. Feature-specific `429` responses may instead report `retry_after_s` in the error. Back off exponentially.
+These are the default request budgets; deployment settings may change them. Requests that reach the limiter carry `X-RateLimit-Limit`, `X-RateLimit-Remaining` and `X-RateLimit-Reset` (Unix seconds). A request-budget `429` carries `Retry-After` in seconds. Earlier authentication or routing refusals may have no rate-limit headers. Feature-specific `429` responses may instead report `retry_after_s` in the error. Back off exponentially. If the request counter cannot be read, the request is refused with `503 service_unavailable` and `Retry-After`, and nothing ran.
 
 Separately from these request limits, a workspace owner may cap the outbound calls the workspace places per UTC hour and per UTC day. `POST /v1/calls` over a cap answers `429 rate_limited` with `retry_after_s` in the error, and places nothing; if the cap cannot be read it answers `503 service_unavailable` and places nothing (app-features.md).
 
@@ -5561,7 +5561,7 @@ const published = await client.publishAgent({ agent_id: agent.id }, {});
 call = client.create_call({
     "agent_id": "northwind-barbers",
     "mode": "prompt",
-    "phone_number": "+141****0123",
+    "phone_number": "+14165550123",
     "task": "Confirm Friday at 3pm. Ask whether that time still suits.",
     "first_sentence": "Hello, this is a quick call about Friday.",
     "voice": "voice_example",
@@ -5574,7 +5574,7 @@ call = client.create_call({
 const call = await client.createCall({
   agent_id: "northwind-barbers",
   mode: "prompt",
-  phone_number: "+141****0123",
+  phone_number: "+14165550123",
   task: "Confirm Friday at 3pm. Ask whether that time still suits.",
   first_sentence: "Hello, this is a quick call about Friday.",
   voice: "voice_example",

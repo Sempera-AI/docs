@@ -211,7 +211,7 @@ Calling hours still apply, with the same `outside_calling_hours` refusal and no 
 ```http
 POST /v1/calls
 Idempotency-Key: owner-rehearsal-unique-intent
-{"agent_id": "northwind-barbers", "to": "+141****0123"}
+{"agent_id": "northwind-barbers", "to": "+14165550123"}
 ```
 
 The example destination must match this workspace owner's verified phone.
@@ -313,7 +313,7 @@ Send only one spelling of an option, including across `settings` and top-level a
 ```http
 POST /v1/calls
 Idempotency-Key: friday-3pm-ada
-{"agent_id": "northwind-barbers", "mode": "prompt", "phone_number": "+141****0123",
+{"agent_id": "northwind-barbers", "mode": "prompt", "phone_number": "+14165550123",
  "task": "Confirm Friday at 3pm. Ask whether that time still suits.",
  "first_sentence": "Hello, this is a quick call about Friday.",
  "voice": "voice_example", "language": "en",

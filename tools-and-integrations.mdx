@@ -19,6 +19,56 @@ Both are workspace-level resources. An Agent attaches them by id through its dra
 
 Production executions happen inside conversations and appear on the Session's tool timeline, not here.
 
+### Tool run errors
+
+The test-mode execute route does not use the native connector dispatcher. Its `tool_execution.error` is:
+
+| Record `status` | HTTP status | Record `error` |
+| --- | --- | --- |
+| `succeeded` | 200 | `null`. If the tool returned an HTTP response, check `output.response.status` for its status. |
+| `refused` | 409 | A human-readable refusal message, not a machine-readable code. |
+| `failed` | 409 | The exception class name, not a native connector error code. |
+
+Use the record's `status` to distinguish these cases. Request errors such as an invalid `environment` use the [REST error envelope](/errors-and-limits) instead of a tool execution record.
+
+Native integration actions run through a separate connector path. It preserves the connector's error code in the action outcome, not in `tool_execution.error`. Common native connector codes include:
+
+| Native code | Meaning |
+| --- | --- |
+| `bad_arguments` | The action received missing or invalid input. |
+| `provider_error` | The provider rejected the request or returned an answer the connector could not use. |
+| `refused_destination` | The connector would not use the requested destination. |
+| `not_found` | The requested or configured resource could not be found. |
+| `unauthorized` | The provider refused access, and the connection may need to be authorized again. |
+| `missing_secret` | The connection lacks required credentials or configuration. |
+| `failed` | The connector could not complete the action or handle the response. |
+| `booking_unconfirmed` | The provider did not confirm the booking, which may still exist or be pending. |
+| `outcome_unknown` | The connector could not establish whether the write went through. |
+| `connection` | The connector could not reach the provider. |
+| `out_of_scope` | The requested resource is outside what the connection or caller may access. |
+| `missing_destination` | The connection has no required destination selected. |
+| `invalid_response` | The provider's response could not be read in the expected format. |
+| `timeout` | The provider did not answer in time. |
+| `rate_limited` | The provider asked Sempera to slow down. |
+
+Google Calendar also uses these codes:
+
+| Native code | Meaning |
+| --- | --- |
+| `calendar_selection_required` | No calendar has been selected. |
+| `calendar_permission_required` | The connection's calendar access mode has not been chosen. |
+| `calendar_read_only` | Appointment changes are switched off for this connection. |
+| `calendar_owner_required` | Appointment changes require a calendar the connected account owns. |
+| `calendar_write_scope_required` | The connection lacks the provider permission for appointment changes. |
+| `calendar_access_required` | The selected calendar must be subscribed and share its events. |
+| `calendar_unavailable` | The connector could not check availability or read events. |
+| `calendar_conflict` | An availability conflict prevented the appointment change. |
+| `calendar_event_not_ours` | The appointment was not booked through this line and cannot be changed here. |
+| `calendar_event_not_callers` | The appointment was not booked from the current caller's number and cannot be changed here. |
+| `calendar_event_cancelled` | The appointment was already cancelled. |
+
+Do not automatically retry `booking_unconfirmed`, `outcome_unknown`, or any write error marked `sent: true`. Check with the provider or ask staff to verify the outcome before trying again.
+
 ## Integrations
 
 `POST /v1/integrations` with `{"definition": {...}}`, `GET /v1/integrations`, `PATCH /v1/integrations/{id}` (with the `revision` you read; a save built on an older revision is refused with `409 conflict`, `reason: stale_connection` and the revision on file), `DELETE /v1/integrations/{id}` (archive; `?restore=1` to restore; an optional `?revision=` names the revision you read, and one that is no longer on file is refused with `409 conflict`, `reason: stale_connection` and the revision on file, with nothing archived or restored; without it the call behaves as before), and `POST /v1/integrations/{id}/verify`, which probes the connection with its real credentials and reports the result. `GET /v1/integrations/{integration_id}` reads one connection and `GET /v1/integrations/{integration_id}/actions` lists the actions it offers a tool (`integrations:read`); both answer in the `{"data": ..., "errors": null}` envelope.
