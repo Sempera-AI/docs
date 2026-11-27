@@ -88,7 +88,7 @@ The API's front door looks at the credential first: a request with no key, an un
 
 ## Tools
 
-Every tool projects an existing route, run as the caller: the route's own scope, role, workspace and ownership checks apply. The table below lists 41 read tools; the other tool families, including writes and follow-up reads, are below. An id from another workspace is refused. The `list_agents` tool keeps its original shape; a list that its route pages is paged here the same way.
+Every tool projects an existing route, run as the caller: the route's own scope, role, workspace and ownership checks apply. The table below lists 49 read tools; the other tool families, including writes and follow-up reads, are below. An id from another workspace is refused. The `list_agents` tool keeps its original shape; a list that its route pages is paged here the same way.
 
 | Tool | Reads | Scope | Arguments | Changes anything? |
 | --- | --- | --- | --- | --- |
@@ -133,6 +133,14 @@ Every tool projects an existing route, run as the caller: the route's own scope,
 | `list_phone_numbers` | `GET /v1/phone-numbers` | `phone_numbers:read` | agent\_id (required), limit, cursor | No |
 | `list_alerts` | `GET /v1/alerts` | `agents:read` | agent\_id, limit, page, sort, direction | No |
 | `get_call_transcript` | `GET /v1/calls/{call_id}` | `calls:read` | call\_id (required), agent\_id | No |
+| `get_agent_memory_schema` | `GET /v1/agents/{agent_id}/memory/schema` | `agents:read` | agent\_id (required) | No |
+| `get_agent_number_binding` | `GET /v2/agents/{uuid}/inbound` | `agents:read` | agent\_id (required) | No |
+| `list_agent_dispositions` | `GET /v2/agents/{uuid}/dispositions` | `agents:read` | agent\_id (required) | No |
+| `list_test_scenarios` | `GET /v1/agent-testing/scenarios` | `agents:read` | agent\_id | No |
+| `get_test_analytics` | `GET /v1/test-analytics` | `tests:read` | agent\_id (required), days, min\_samples | No |
+| `list_eval_runs` | `GET /v1/evals/runs` | `evals:read` | agent\_id, status, since, until, limit, cursor | No |
+| `get_eval_run` | `GET /v1/evals/runs/{run_id}` | `evals:read` | run\_id (required) | No |
+| `list_batches` | `GET /v2/batches/list` | `calls:read` | agent\_id, take, skip | No |
 
 `get_call_transcript` also needs a transcript permission that no API key or OAuth grant can hold yet: until an owner can grant it, the tool is not listed and a call is refused `insufficient_scope`. `get_credential` reads the credential itself, so every credential can call it, including an OAuth phone grant. Its `connection` says what signed the connection in: `oauth_grant` (with the client id, the label the owner approved and whether a verified redirect named it), `mcp_key`, `rest_credential` or `api_key`. An OAuth grant is stored as a developer-class key, so `kind` and `key_kind` alone do not tell it apart; its scopes and role are the grant's own. When no speech model is published for customers yet, `list_models` answers an empty `models` list with a `note` saying so. `list_members` takes the workspace id `get_credential` returns. With `days` set to 7, 14, 30 or 90, `get_analytics_overview` returns a phone-only breakdown. With `start` or `end`, it returns totals for the requested range and the preceding range of equal length. With no arguments those ranges cover the latest 30 days and the 30 days before them. The range totals report `total_cost` as `null`. A request can use either `days` or date bounds.
 
@@ -174,6 +182,9 @@ Seventeen tools answer a short, written-out list of fields rather than the route
 - \*\*`list_alerts`\*\* returns each alert rule's metric, thresholds, the agents it covers, whether it is on and whether it is firing, and `notification_count`. Where its notifications go (addresses, channels, receiving URLs) is not returned.
 - \*\*`list_members`\*\* returns each active member's user id, first and last name, role, whether they own the workspace and when they joined. No email address and no phone number.
 - \*\*`list_webhook_deliveries`\*\* shows recorded attempts, newest first: the event id and type, attempt number, status, HTTP response code and timestamps. It does not show the delivery payload or receiver error text, and it does not contact the receiver. A 2xx response shows the receiver accepted the request, not that it processed the notification.
+- \*\*`list_test_scenarios`\*\* returns each saved scenario's id, agent, name, kind, simulated-caller prompt, expectation, turn limit, start step, labels and expected tool calls. The scenario's request data (free-form fixture JSON) is not returned.
+- \*\*`list_eval_runs` and `get_eval_run`\*\* return a run's judges, agent versions, counts, pass rate and, on the detail read, one verdict and score per call and judge with how it moved since the previous run. Who started the run, each judge's reasoning (which quotes the conversation) and the rerun body are not returned.
+- \*\*`list_batches`\*\* returns each outbound batch's id, agent, name, state, creation time, recipient count and the count of recipients in each state. Recipient numbers (even masked) and the consent wording are not returned.
 
 An outside client needs an API key with both `agents:read` and `webhooks:read` to use these tools. The Connected AI client presets and OAuth phone grants do not include `webhooks:read`.
 
@@ -243,7 +254,7 @@ Tools with an MCP Apps screen show the following views in supported hosts. Text-
 
 ## Tool reference
 
-This section is written from the hosted server's own tool list each time a tool changes; the stdio package, its registry listing and the server card are written from the same list. It names every tool a credential can be granted today (69). `tools/list` returns the ones your credential's scopes allow. API key says whether a workspace API key with the scopes lists the tool; OAuth says whether an OAuth grant can. Screen is the in-chat screen the tool names (see Screens).
+This section is written from the hosted server's own tool list each time a tool changes; the stdio package, its registry listing and the server card are written from the same list. It names every tool a credential can be granted today (77). `tools/list` returns the ones your credential's scopes allow. API key says whether a workspace API key with the scopes lists the tool; OAuth says whether an OAuth grant can. Screen is the in-chat screen the tool names (see Screens).
 
 | Tool | Title | Scopes | Read-only | API key | OAuth | Screen |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -287,6 +298,14 @@ This section is written from the hosted server's own tool list each time a tool 
 | `list_models` | List the published speech models | `models:read` | Yes | Yes | Yes | none |
 | `list_phone_numbers` | List an agent's phone numbers | `phone_numbers:read` | Yes | Yes | Yes | none |
 | `list_alerts` | List the workspace's alert rules | `agents:read` | Yes | Yes | Yes | none |
+| `get_agent_memory_schema` | Read an agent's caller-memory schema | `agents:read` | Yes | Yes | Yes | none |
+| `get_agent_number_binding` | Read what an agent's inbound calls reach | `agents:read` | Yes | Yes | Yes | none |
+| `list_agent_dispositions` | List an agent's dispositions | `agents:read` | Yes | Yes | Yes | none |
+| `list_test_scenarios` | List the saved test scenarios | `agents:read` | Yes | Yes | Yes | none |
+| `get_test_analytics` | Read an agent's test failures per step | `tests:read` | Yes | Yes | Yes | none |
+| `list_eval_runs` | List the workspace's evaluation runs | `evals:read` | Yes | Yes | Yes | none |
+| `get_eval_run` | Read one evaluation run | `evals:read` | Yes | Yes | Yes | none |
+| `list_batches` | List outbound call batches | `calls:read` | Yes | Yes | Yes | none |
 | `get_knowledge_content` | Read knowledge text and revision | `knowledge:read` | Yes | Yes | Yes | none |
 | `get_agent_simulation` | Read an offline simulation set | `tests:read` | Yes | Yes | Yes | none |
 | `get_agent_draft_changes` | Read what publishing the draft would change | `agents:read` | Yes | Yes | Yes | `ui://sempera/agent-draft-changes.html` |
